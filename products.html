@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - ShopHub</title>
+  <meta name="description" content="Browse our complete collection of products. Filter by category and price to find exactly what you're looking for.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">🛍️ ShopHub</a>
+      
+      <div class="search-bar">
+        <input type="search" id="search-input" class="search-input" placeholder="Search products...">
+        <button id="search-btn" class="search-btn">Search</button>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">All Products</a></li>
+        <li><a href="cart.html" class="cart-link">
+          🛒 Cart
+          <span id="cart-count"></span>
+        </a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Products Page Container -->
+  <div class="products-page-container">
+    <!-- Filters Sidebar -->
+    <aside class="filters-sidebar">
+      <h2 class="section-title" style="font-size: 18px; text-align: left; margin-bottom: 20px;">Filters</h2>
+
+      <!-- Category Filter -->
+      <div class="filter-group">
+        <div class="filter-title">Category</div>
+        <label class="filter-option">
+          <input type="radio" name="category" value="all" checked>
+          <label>All Categories</label>
+        </label>
+        <label class="filter-option">
+          <input type="radio" name="category" value="electronics">
+          <label>Electronics</label>
+        </label>
+        <label class="filter-option">
+          <input type="radio" name="category" value="clothing">
+          <label>Clothing</label>
+        </label>
+        <label class="filter-option">
+          <input type="radio" name="category" value="footwear">
+          <label>Footwear</label>
+        </label>
+        <label class="filter-option">
+          <input type="radio" name="category" value="accessories">
+          <label>Accessories</label>
+        </label>
+      </div>
+
+      <!-- Price Filter -->
+      <div class="filter-group">
+        <div class="filter-title">Price Range</div>
+        <div class="price-inputs">
+          <input type="number" id="min-price" class="price-input" placeholder="Min" min="0">
+          <input type="number" id="max-price" class="price-input" placeholder="Max" min="0">
+        </div>
+        <button onclick="applyPriceFilter()" class="add-to-cart-btn" style="margin-top: 10px; width: 100%; padding: 8px;">Apply</button>
+      </div>
+
+      <!-- Rating Filter -->
+      <div class="filter-group">
+        <div class="filter-title">Rating</div>
+        <label class="filter-option">
+          <input type="checkbox" value="4.5">
+          <label>4.5 ★ & up</label>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" value="4">
+          <label>4 ★ & up</label>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" value="3.5">
+          <label>3.5 ★ & up</label>
+        </label>
+      </div>
+
+      <!-- Clear Filters -->
+      <button class="clear-filters-btn" onclick="clearAllFilters()">Clear All Filters</button>
+    </aside>
+
+    <!-- Main Products Area -->
+    <div class="products-main">
+      <div class="products-count">
+        <span id="product-count">Showing 0 products</span>
+      </div>
+      <div class="products-grid" id="products-grid">
+        <!-- Products will be injected here -->
+      </div>
+      <div id="no-products" style="display: none; text-align: center; padding: 40px;">
+        <p style="font-size: 18px; color: #666;">No products found matching your filters.</p>
+        <a href="products.html" class="view-all-btn" style="margin-top: 20px;">Reset Filters</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>About ShopHub</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Customer Service</h3>
+        <ul>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Policies</h3>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Newsletter</h3>
+        <p>Subscribe to get special offers and updates!</p>
+        <div class="footer-newsletter">
+          <input type="email" placeholder="Enter your email" required>
+          <button>Subscribe</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 ShopHub. All rights reserved. | Design with ❤️ for great shopping experience</p>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <button id="scroll-to-top" aria-label="Scroll to top">↑</button>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Products page functionality
+    let allProducts = getAllProducts();
+    let filteredProducts = [...allProducts];
+
+    // Initialize products page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check for search parameter
+      const searchQuery = getURLParam('search');
+      const categoryParam = getURLParam('category');
+
+      if (searchQuery) {
+        filteredProducts = searchProducts(searchQuery);
+        document.querySelector('.products-count').innerHTML = 
+          `<p style="margin-bottom: 10px;">Search results for "<strong>${searchQuery}</strong>"</p>`;
+      }
+
+      if (categoryParam && categoryParam !== 'all') {
+        document.querySelector('input[value="' + categoryParam + '"]').checked = true;
+        filteredProducts = getProductsByCategory(categoryParam);
+      }
+
+      renderProducts();
+
+      // Setup filter listeners
+      document.querySelectorAll('input[name="category"]').forEach(input => {
+        input.addEventListener('change', applyFilters);
+      });
+
+      document.querySelectorAll('input[type="checkbox"][value]').forEach(input => {
+        input.addEventListener('change', applyFilters);
+      });
+    });
+
+    // Apply filters function
+    function applyFilters() {
+      filteredProducts = [...allProducts];
+
+      // Apply category filter
+      const selectedCategory = document.querySelector('input[name="category"]:checked').value;
+      if (selectedCategory && selectedCategory !== 'all') {
+        filteredProducts = filteredProducts.filter(p => p.category === selectedCategory);
+      }
+
+      // Apply rating filter
+      const checkedRatings = Array.from(document.querySelectorAll('input[type="checkbox"][value]:checked'))
+        .map(input => parseFloat(input.value));
+      
+      if (checkedRatings.length > 0) {
+        filteredProducts = filteredProducts.filter(p => 
+          checkedRatings.some(rating => p.rating >= rating)
+        );
+      }
+
+      // Apply price filter if manually set
+      const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+      const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
+      filteredProducts = filteredProducts.filter(p => p.price >= minPrice && p.price <= maxPrice);
+
+      renderProducts();
+    }
+
+    // Apply price filter
+    function applyPriceFilter() {
+      applyFilters();
+    }
+
+    // Clear all filters
+    function clearAllFilters() {
+      document.querySelector('input[value="all"]').checked = true;
+      document.querySelectorAll('input[type="checkbox"][value]').forEach(input => {
+        input.checked = false;
+      });
+      document.getElementById('min-price').value = '';
+      document.getElementById('max-price').value = '';
+      filteredProducts = [...allProducts];
+      renderProducts();
+    }
+
+    // Render products
+    function renderProducts() {
+      const productsGrid = document.getElementById('products-grid');
+      const noProducts = document.getElementById('no-products');
+      const productCount = document.getElementById('product-count');
+
+      if (filteredProducts.length === 0) {
+        productsGrid.style.display = 'none';
+        noProducts.style.display = 'block';
+        productCount.textContent = 'Showing 0 products';
+      } else {
+        productsGrid.style.display = 'grid';
+        noProducts.style.display = 'none';
+        productsGrid.innerHTML = filteredProducts
+          .map(product => createProductCard(product))
+          .join('');
+        productCount.textContent = `Showing ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
+      }
+    }
+  </script>
+</body>
+</html>

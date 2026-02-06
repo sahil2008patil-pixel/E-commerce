@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - ShopHub</title>
+  <meta name="description" content="Complete your purchase with our secure checkout process.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">🛍️ ShopHub</a>
+      
+      <div class="search-bar">
+        <input type="search" id="search-input" class="search-input" placeholder="Search products...">
+        <button id="search-btn" class="search-btn">Search</button>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">All Products</a></li>
+        <li><a href="cart.html" class="cart-link">
+          🛒 Cart
+          <span id="cart-count"></span>
+        </a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Checkout Container -->
+  <div class="checkout-container">
+    <h1 style="margin-bottom: 30px;">Checkout</h1>
+
+    <div id="checkout-error" style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+      <strong>Cart is empty!</strong> Please add items to your cart before checkout.
+      <a href="products.html" style="display: block; margin-top: 10px; color: #721c24; text-decoration: underline;">Go to Products</a>
+    </div>
+
+    <div id="checkout-content" class="checkout-content" style="display: none;">
+      <!-- Checkout form -->
+      <form id="checkout-form" class="checkout-form" onsubmit="submitCheckout(event)">
+        <!-- Shipping Information -->
+        <div class="form-section">
+          <h2 class="form-section-title">Shipping Information</h2>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="first-name" class="form-label">First Name *</label>
+              <input type="text" id="first-name" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label for="last-name" class="form-label">Last Name *</label>
+              <input type="text" id="last-name" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="email" class="form-label">Email Address *</label>
+              <input type="email" id="email" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="phone" class="form-label">Phone Number *</label>
+              <input type="tel" id="phone" class="form-input" pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" required>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="address" class="form-label">Street Address *</label>
+              <input type="text" id="address" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city" class="form-label">City *</label>
+              <input type="text" id="city" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label for="state" class="form-label">State *</label>
+              <input type="text" id="state" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="zip" class="form-label">ZIP Code *</label>
+              <input type="text" id="zip" class="form-input" pattern="[0-9]{6}" title="Please enter a valid 6-digit ZIP code" required>
+            </div>
+            <div class="form-group">
+              <label for="country" class="form-label">Country *</label>
+              <input type="text" id="country" class="form-input" value="India" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="form-section">
+          <h2 class="form-section-title">Payment Method</h2>
+          
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="payment-method" class="form-label">Select Payment Method *</label>
+              <select id="payment-method" class="form-select" required>
+                <option value="">-- Choose Payment Method --</option>
+                <option value="card">Credit/Debit Card</option>
+                <option value="netbanking">Net Banking</option>
+                <option value="wallet">Digital Wallet</option>
+                <option value="upi">UPI</option>
+              </select>
+            </div>
+          </div>
+
+          <p style="font-size: 13px; color: #666; margin-top: 10px;">
+            💳 This is a demo checkout. No actual payment will be processed.
+          </p>
+        </div>
+
+        <!-- Terms -->
+        <div class="form-section">
+          <label class="filter-option" style="margin-bottom: 0;">
+            <input type="checkbox" id="terms" required>
+            <label>I agree to the Terms of Service and Privacy Policy *</label>
+          </label>
+        </div>
+
+        <button type="submit" class="place-order-btn">Place Order</button>
+      </form>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <div class="summary-title">Order Summary</div>
+        
+        <div class="summary-products" id="summary-products">
+          <!-- Products will be injected here -->
+        </div>
+
+        <div class="summary-row" style="border-top: 1px solid var(--border-color); padding-top: 15px;">
+          <span>Subtotal</span>
+          <span class="summary-value" id="summary-subtotal">₹0</span>
+        </div>
+        
+        <div class="summary-row">
+          <span>Tax (18%)</span>
+          <span class="summary-value" id="summary-tax">₹0</span>
+        </div>
+        
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span class="summary-value" id="summary-shipping">FREE</span>
+        </div>
+        
+        <div class="summary-row" style="border-top: 2px solid var(--border-color); padding-top: 15px; margin-top: 15px; font-size: 18px; font-weight: 700;">
+          <span>Total Amount</span>
+          <span class="summary-value" id="summary-total">₹0</span>
+        </div>
+
+        <div style="background-color: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 13px; color: #2e7d32;">
+          ✓ Secure SSL Encryption
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Screen -->
+  <div id="success-screen" class="success-screen">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <div class="success-icon">✅</div>
+      <div class="success-message">
+        <h2>Order Placed Successfully!</h2>
+        <p>Thank you for shopping with ShopHub</p>
+        <div class="order-number" id="order-number">ORDER #123456789</div>
+        <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+          A confirmation email has been sent to your email address.
+        </p>
+        <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+          You will receive your order within 3-5 business days.
+        </p>
+        <a href="index.html" class="continue-btn">Continue Shopping</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>About ShopHub</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Customer Service</h3>
+        <ul>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Policies</h3>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Newsletter</h3>
+        <p>Subscribe to get special offers and updates!</p>
+        <div class="footer-newsletter">
+          <input type="email" placeholder="Enter your email" required>
+          <button>Subscribe</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 ShopHub. All rights reserved. | Design with ❤️ for great shopping experience</p>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <button id="scroll-to-top" aria-label="Scroll to top">↑</button>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Checkout page functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      checkoutPageInit();
+    });
+
+    // Check if cart has items
+    function checkoutPageInit() {
+      const cartItems = cart.getItems();
+
+      if (cartItems.length === 0) {
+        document.getElementById('checkout-error').style.display = 'block';
+        document.getElementById('checkout-content').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('checkout-error').style.display = 'none';
+      document.getElementById('checkout-content').style.display = 'grid';
+
+      renderCheckoutSummary();
+    }
+
+    // Render checkout summary
+    function renderCheckoutSummary() {
+      const cartData = cart.getCheckoutData();
+      const summaryProducts = document.getElementById('summary-products');
+
+      let productsHTML = '';
+      cartData.items.forEach(item => {
+        productsHTML += `
+          <div class="summary-product-item">
+            <img src="${item.image}" alt="${item.name}" class="summary-product-image">
+            <div class="summary-product-details">
+              <div class="summary-product-name">${item.name}</div>
+              <div class="summary-product-qty">Qty: ${item.quantity}</div>
+            </div>
+            <div class="summary-product-price">${formatCurrency(item.price * item.quantity)}</div>
+          </div>
+        `;
+      });
+
+      summaryProducts.innerHTML = productsHTML;
+
+      // Update summary totals
+      document.getElementById('summary-subtotal').textContent = formatCurrency(cartData.subtotal);
+      document.getElementById('summary-tax').textContent = formatCurrency(cartData.tax);
+      document.getElementById('summary-shipping').textContent = cartData.shipping === 0 ? 'FREE' : formatCurrency(cartData.shipping);
+      document.getElementById('summary-total').textContent = formatCurrency(cartData.total);
+    }
+
+    // Submit checkout form
+    function submitCheckout(event) {
+      event.preventDefault();
+
+      // Get form data
+      const formData = {
+        firstName: document.getElementById('first-name').value,
+        lastName: document.getElementById('last-name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        zip: document.getElementById('zip').value,
+        country: document.getElementById('country').value,
+        paymentMethod: document.getElementById('payment-method').value,
+        orderDate: new Date().toISOString(),
+        items: cart.getCheckoutData().items,
+        total: cart.getCheckoutData().total
+      };
+
+      // Save order to localStorage
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const orderNumber = Math.floor(Math.random() * 1000000) + 100000;
+      formData.orderNumber = orderNumber;
+      orders.push(formData);
+      localStorage.setItem('orders', JSON.stringify(orders));
+
+      // Clear cart
+      cart.clearCart();
+
+      // Show success screen
+      showSuccessScreen(orderNumber);
+    }
+
+    // Show success screen
+    function showSuccessScreen(orderNumber) {
+      document.getElementById('checkout-form').style.display = 'none';
+      document.getElementById('order-summary').style.display = 'none';
+      document.getElementById('checkout-content').style.display = 'block';
+
+      const successScreen = document.getElementById('success-screen');
+      successScreen.classList.add('show');
+      document.getElementById('order-number').textContent = `ORDER #${orderNumber}`;
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
